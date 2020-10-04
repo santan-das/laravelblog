@@ -147,9 +147,10 @@ class CRUDController extends Controller
     public function singleUser(Request $request){
 
         $id = $request->id;
-        $getusers = DB::table('tbl_users')
+    /*    $getusers = DB::table('tbl_users')
                         ->where('id','=',$id)
-                        ->get();
+                        ->get();*/
+        $getusers =  DB::select('CALL getAllUsers(?)',array($id));
 
         return response()->json(['success' => 'true','data'=>$getusers]);
     }
