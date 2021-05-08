@@ -95,3 +95,4 @@ Route::post('api/pincodes-data', 'CRUDController@pincodeData');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('delete-seller/{id}', 'HomeController@deleteSeller');
