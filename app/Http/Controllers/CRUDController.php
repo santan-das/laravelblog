@@ -11,7 +11,7 @@ use App\Common_model;
 class CRUDController extends Controller
 {
 
-     public $error_reason;
+    public $error_reason;
     public $success_message;
     public $data;
 
@@ -328,4 +328,135 @@ class CRUDController extends Controller
 
       return redirect('/crud');
     }
+
+/*code for food blog*/
+    public function getAllFood(){
+
+        $getfoods = DB::table('tbl_foods')
+                        ->get();
+
+        $allfoods = array();
+        $url = url('');
+        foreach ($getfoods as $key => $value) {
+
+            // if(!empty($value->user_image)){
+            //       $path = $url.'/uploads/profile_pic/'.$value->user_image;  
+            //   }else{
+            //       $path = "";
+            //   }
+
+            $foodarr = array(
+                                'id'=> $value->id,
+                                'name'=> $value->name,
+                                'description'=> $value->description,
+                                // 'user_image'=> $path,
+                                );
+
+                array_push($allfoods, $foodarr);
+        }
+
+        return response()->json(['success' => 'true','data'=>$allfoods]);
+    }
+
+
+    public function createFood(Request $request) {
+        // echo '<pre>';
+        // print_r($request->all());
+        // die;
+
+        //  if ( $image = $request->file('file')) {
+        //     $filename = time().'.'.$image->getClientOriginalExtension();
+        //     $destinationPath = public_path('/uploads/profile_pic');
+        //     $image->move($destinationPath, $filename);
+
+        // }
+
+       $data  = array(
+                         'description' => isset($request->description)?$request->description:'',
+                         'name'  => isset($request->name)?$request->name:'',
+                        'updated_at'=>date('Y-m-d H:i:s'));
+       $lastid =  DB::table('tbl_foods')->insertGetId($data);
+
+       if($lastid){
+        return response()->json(['success' => 'true','data'=> $lastid]);
+       }
+
+    }
+
+    public function signUp(Request $request) {
+
+        $data  = array(
+                         'email' => $request->email,
+                         'name'  => $request->name,
+                         'mobile'  => $request->mobile,
+                         'password'  => md5($request->password),
+                         'updated_at'=>date('Y-m-d H:i:s'),
+                         'created_at'=>date('Y-m-d H:i:s'),
+                     );
+       $lastid =  DB::table('tbl_users')->insertGetId($data);
+
+       if($lastid){
+        return response()->json(['success' => 'true','data'=> $lastid]);
+       }
+
+    }
+
+    public function updateFood(Request $request) {
+
+         $data  = array(
+                         'description' => $request->data['description'],
+                         'name'  => $request->data['name'],
+                         'created_at'=>date('Y-m-d H:i:s'),
+                     );
+       $lastid =  DB::table('tbl_foods')->where('id', $request->id)->update($data);
+
+       if($lastid){
+        return response()->json(['success' => 'true','data'=> $lastid]);
+       }
+    }
+
+    public function checkLogin(Request $request){
+
+        $checkuser = DB::table('tbl_users')->where('email', $request->email)->where('password', md5($request->password) )->first();
+
+        if($checkuser) {
+
+            $userdata = ['email' => $checkuser->email, 'name' => $checkuser->name, 'mobile' => $checkuser->mobile];
+
+            return response()->json(['success' => 'true','data'=> !empty($userdata) ? $userdata : null]);
+        }else {
+            return response()->json(['fail' => 'fail','data'=> 'User Not Found']);
+        }
+
+    }
+
+    public function getFood($id) {
+
+        $food = DB::table('tbl_foods')->where('id', $id)->first();
+
+         if($food) {
+
+            $food_data = ['name' => $food->name, 'description' => $food->description];
+
+            return response()->json(['success' => 'true','data'=> !empty($food_data) ? $food_data : null]);
+        }else {
+            return response()->json(['fail' => 'fail','data'=> 'Not Found']);
+        }
+
+    }
+
+
+
+    public function deleteFood($id) {
+
+         $lastid =  DB::table('tbl_foods')->where('id', $id)->delete();
+
+       if($lastid){
+        return response()->json(['success' => 'true','data'=> $lastid]);
+       }
+
+
+    }
+
+
 }

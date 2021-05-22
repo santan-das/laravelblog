@@ -14,7 +14,7 @@
 
         if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
             // may also be using PUT, PATCH, HEAD etc
-            header("Access-Control-Allow-Methods: GET, POST, OPTIONS");         
+            header("Access-Control-Allow-Methods: GET, POST, OPTIONS, DELETE");         
 
         if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
             header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
@@ -79,6 +79,13 @@ Route::get('/', function () {
 });
 
 Route::get('api/getusers','CRUDController@getAllUsers');
+Route::get('api/getfood','CRUDController@getAllFood');
+Route::get('api/get-food/{id}','CRUDController@getFood');
+Route::post('api/create-food','CRUDController@createFood');
+Route::post('api/update-food','CRUDController@updateFood');
+Route::post('api/signup','CRUDController@signUp');
+Route::post('api/check-login','CRUDController@checkLogin');
+Route::delete('api/delete-food/{id}','CRUDController@deleteFood');
 
 Route::post('api/getalldata','CRUDController@getTotalUsers');
 
