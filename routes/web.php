@@ -78,7 +78,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('api/getusers','CRUDController@getAllUsers');
+Route::get('api/getusers','CRUDController@getAllUsers')->middleware('role');
 Route::get('api/getfood','CRUDController@getAllFood');
 Route::get('api/get-food/{id}','CRUDController@getFood');
 Route::post('api/create-food','CRUDController@createFood');
@@ -103,3 +103,15 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('delete-seller/{id}', 'HomeController@deleteSeller');
+
+Route::get('send-mail', function () {
+   
+    $details = [
+        'title' => 'Mail from test',
+        'body' => 'This is for testing email using smtp'
+    ];
+   
+    \Mail::to('susmita.das90@gmail.com')->send(new \App\Mail\MyTestMail($details));
+   
+    dd("Email is Sent.");
+});
